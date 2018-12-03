@@ -1,10 +1,4 @@
-const env = process.env.NODE_ENV || 'development';
-console.log(env);
-if (env === 'test') {
-    process.env.MONGODB_URI = 'mongodb://localhost:27017/TodoAppTest';
-} else if(env ==='development') {
-    process.env.MONGODB_URI = 'mongodb://localhost:27017/TodoApp';    
-}
+require('./config/config');
 
 const _ = require('lodash');
 const express = require('express');
