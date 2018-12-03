@@ -34,18 +34,34 @@ app.get('/todos/:id', (req, res) => {
     const id = req.params.id;
     if (!ObjectID.isValid(id)) {
         const error = 'Not a valid id';
-        res.status(404).send({ error })
-    } else {
-        Todo.findById(id).then((todo) => {
-            if (todo) {
-                res.status(200).send({ todo });
-            } else {
-                res.status(404).send('Id not found');
-            }
-        }, (err) => {
-            res.status(400).send({ err });
-        });
+        return res.status(404).send({ error })
     }
+    Todo.findById(id).then((todo) => {
+        if (todo) {
+            res.status(200).send({ todo });
+        } else {
+            res.status(404).send('Id not found');
+        }
+    }, (err) => {
+        res.status(400).send({ err });
+    });
+})
+
+app.delete('/todos/:id', (req, res) => {
+    const id = req.params.id;
+    if (!ObjectID.isValid(id)) {
+        const error = 'Not a valid id';
+        return res.status(404).send({ error })
+    }
+    Todo.findByIdAndRemove(id).then((data) => {
+        var message = 'Document deleted successfully.';
+        if (data) {
+            return res.status(200).send({ message, data });
+        }
+        res.status(404).send({ message: 'Document not found' });
+    }, (err) => {
+        res.status(400).send({ err });
+    });
 })
 
 app.post('/todos', (req, res) => {
