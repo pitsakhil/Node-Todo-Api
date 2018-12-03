@@ -77,7 +77,7 @@ describe('GET /todos/:id', () => {
 });
 
 describe('DELETE /todos/:id', () => {
-    it('should return todo by id', (done) => {
+    it('should delete todo by id', (done) => {
         const id = todos[0]['_id'].toHexString();
         request(app)
             .delete(`/todos/${id}`)
@@ -100,6 +100,29 @@ describe('DELETE /todos/:id', () => {
         const id = 1234;
         request(app)
             .delete(`/todos/${id}`)
+            .expect(404)
+            .end(done);
+    });
+});
+
+describe('UPDATE /todos/:id', () => {
+    it('should update todo by id', (done) => {
+        const id = todos[0]['_id'].toHexString();
+        const text = "Update Text";
+        request(app)
+            .put(`/todos/${id}`)
+            .send({ text })
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.data.text).toBe(text);
+            })
+            .end(done);
+    });
+
+    it('should return 404 if objectid is invalid', (done) => {
+        const id = 1234;
+        request(app)
+            .put(`/todos/${id}`)
             .expect(404)
             .end(done);
     });
