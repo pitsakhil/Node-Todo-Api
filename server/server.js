@@ -6,11 +6,14 @@ const bodyParser = require('body-parser');
 const { ObjectID } = require('mongodb');
 
 const { Todo } = require('./models/todo');
+const { User } = require('./models/user');
 
 const port = process.env.PORT || 3000;
 const app = express();
 
 app.use(bodyParser.json());
+
+//Todo API's
 
 app.get('/todos', (req, res) => {
     Todo.find().then((todos) => {
@@ -83,6 +86,28 @@ app.post('/todos', (req, res) => {
     const newTodo = new Todo(req.body);
     newTodo.save().then((doc) => {
         res.status(200).send(doc);
+    }, (err) => {
+        res.status(400).send(err);
+    });
+});
+
+//User API's
+
+app.post('/users', (req, res) => {
+    const body = _.pick(req.body, ['email', 'password']);
+    const user = new User(body);
+    user.save().then(() => {
+        return user.generateAuthToken();
+    }).then((token) => {
+        res.header('x-auth', token).send(user);
+    }).catch((err) => {
+        res.status(400).send(err);
+    });
+});
+
+app.get('/users', (req, res) => {
+    User.find().then((users) => {
+        res.send({ users });
     }, (err) => {
         res.status(400).send(err);
     });
