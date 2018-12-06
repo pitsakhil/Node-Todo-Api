@@ -3,6 +3,7 @@ require('./config/config');
 const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const { ObjectID } = require('mongodb');
 
 const { Todo } = require('./models/todo');
@@ -13,6 +14,7 @@ const port = process.env.PORT || 3000;
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors());
 
 //Todo API's
 
